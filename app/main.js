@@ -2,10 +2,10 @@
 // Satu pekerjaan: merutekan halaman dan menghidupkan semua kontrol.
 // Data tinggal di data.js, bagan di charts.js, halaman di views.js.
 
-import { SEARCH_INDEX, PROVINCES } from "./data.js";
+import { SEARCH_INDEX, PROVINCES, CPI_SERIES } from "./data.js";
 import {
   renderHome, renderPopulation, renderEconomy, renderPrices,
-  renderTrade, renderHealth, renderRegions, renderSources,
+  renderTrade, renderHealth, renderRegions, renderCompare, renderSources,
 } from "./views.js";
 
 const view = document.getElementById("view");
@@ -24,6 +24,8 @@ const state = {
   provFilter: "",
   sortKey: "pop",
   sortDir: -1,
+  compareA: "Jawa Barat",
+  compareB: "DKI Jakarta",
 };
 
 const ROUTES = {
@@ -34,6 +36,7 @@ const ROUTES = {
   "/perdagangan": { render: () => renderTrade(state), title: "Perdagangan" },
   "/kesehatan-pendidikan": { render: () => renderHealth(state), title: "Kesehatan & Pendidikan" },
   "/daerah": { render: () => renderRegions(state), title: "Daerah" },
+  "/bandingkan": { render: () => renderCompare(state), title: "Bandingkan Provinsi" },
   "/sumber": { render: () => renderSources(state), title: "Sumber Data" },
 };
 
@@ -79,6 +82,30 @@ function wireView() {
   if (csv) csv.addEventListener("click", downloadProvinceCsv);
   const copy = view.querySelector("#copy-link");
   if (copy) copy.addEventListener("click", () => copyText(location.href, copy));
+  const selA = view.querySelector("#compare-a");
+  const selB = view.querySelector("#compare-b");
+  if (selA) selA.addEventListener("change", () => { state.compareA = selA.value; render(); });
+  if (selB) selB.addEventListener("change", () => { state.compareB = selB.value; render(); });
+  const calcRun = view.querySelector("#calc-run");
+  if (calcRun) calcRun.addEventListener("click", runCalculator);
+  const calcAmount = view.querySelector("#calc-amount");
+  const calcYear = view.querySelector("#calc-year");
+  if (calcAmount) calcAmount.addEventListener("input", runCalculator);
+  if (calcYear) calcYear.addEventListener("change", runCalculator);
+}
+
+// Kalkulator daya beli: nilai tahun lama dalam rupiah 2024 memakai IHK BPS.
+function runCalculator() {
+  const amount = Number(view.querySelector("#calc-amount")?.value || 0);
+  const year = Number(view.querySelector("#calc-year")?.value || 2020);
+  const result = view.querySelector("#calc-result");
+  if (!result) return;
+  if (!amount || amount <= 0) { result.textContent = "Masukkan jumlah rupiah lebih dari 0."; return; }
+  const from = CPI_SERIES.find((c) => c.year === year) || CPI_SERIES[0];
+  const to = CPI_SERIES.find((c) => c.year === 2024);
+  const value = Math.round((amount * to.index) / from.index);
+  const fmt = (n) => "Rp" + n.toLocaleString("id-ID");
+  result.textContent = `${fmt(amount)} pada ${year} setara dengan ${fmt(value)} pada 2024.`;
 }
 
 // Setelah render ulang karena mengetik filter, kembalikan fokus ke kotaknya.

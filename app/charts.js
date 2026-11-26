@@ -8,6 +8,11 @@ function esc(value) {
   return String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
+// Angka tampil dengan koma desimal Indonesia (18,98 — bukan 18.98).
+function num(value) {
+  return typeof value === "number" ? value.toLocaleString("id-ID") : String(value);
+}
+
 function niceMax(max) {
   const step = Math.pow(10, Math.floor(Math.log10(max)));
   const norm = max / step;
@@ -101,7 +106,7 @@ export function donutChart(slices, options = {}) {
     const xi0 = cx + inner * Math.cos(a0);
     const yi0 = cy + inner * Math.sin(a0);
     const color = PALETTE[i % PALETTE.length];
-    svg += `<path d="M${x0.toFixed(1)},${y0.toFixed(1)} A${r},${r} 0 ${large} 1 ${x1.toFixed(1)},${y1.toFixed(1)} L${xi1.toFixed(1)},${yi1.toFixed(1)} A${inner},${inner} 0 ${large} 0 ${xi0.toFixed(1)},${yi0.toFixed(1)} Z" fill="${color}"><title>${esc(p.label)}: ${esc(String(p.value))}%</title></path>`;
+    svg += `<path d="M${x0.toFixed(1)},${y0.toFixed(1)} A${r},${r} 0 ${large} 1 ${x1.toFixed(1)},${y1.toFixed(1)} L${xi1.toFixed(1)},${yi1.toFixed(1)} A${inner},${inner} 0 ${large} 0 ${xi0.toFixed(1)},${yi0.toFixed(1)} Z" fill="${color}"><title>${esc(p.label)}: ${esc(num(p.value))}%</title></path>`;
   });
   svg += `<text x="${cx}" y="${cy - 2}" class="donut-center" text-anchor="middle">${esc(options.centerTop || "")}</text>`;
   svg += `<text x="${cx}" y="${cy + 18}" class="donut-sub" text-anchor="middle">${esc(options.centerBottom || "")}</text></svg>`;
@@ -132,5 +137,5 @@ export function hbarChart(rows, options = {}) {
 
 // Legenda kecil untuk donat dan batang.
 export function legend(items) {
-  return `<ul class="legend">${items.map((p, i) => `<li><span class="swatch" style="background:${PALETTE[i % PALETTE.length]}"></span>${esc(p.label)} — <strong>${esc(String(p.value))}%</strong></li>`).join("")}</ul>`;
+  return `<ul class="legend">${items.map((p, i) => `<li><span class="swatch" style="background:${PALETTE[i % PALETTE.length]}"></span>${esc(p.label)} — <strong>${esc(num(p.value))}%</strong></li>`).join("")}</ul>`;
 }

@@ -5,10 +5,15 @@
 import { barChart, lineChart, donutChart, hbarChart, legend } from "./charts.js";
 import {
   HEADLINE, POPULATION_YEAR, AGE_GROUPS, ISLAND_SHARE, PROVINCES,
-  GDP_YEAR, GDP_SECTORS, INFLATION_YEAR, TPT_YEAR, POVERTY_YEAR,
+  GDP_YEAR, GDP_SECTORS, INFLATION_YEAR, CPI_SERIES, TPT_YEAR, POVERTY_YEAR,
   TRADE_YEAR, EXPORT_DESTINATIONS, TOP_EXPORTS, HDI_YEAR, FACTS,
   EDUCATION, SOURCES, UPDATES,
 } from "./data.js";
+
+// Format angka Indonesia: 281,6 — bukan 281.6.
+function idNum(v, decimals = 1) {
+  return v.toLocaleString("id-ID", { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+}
 
 function src(text) {
   return `<p class="source">Sumber: ${text}</p>`;
@@ -77,7 +82,7 @@ export function renderHome(state) {
   <section>
     ${sectionHead("Penduduk terus bertambah, perlahan", "Pertumbuhan penduduk melambat dari 1,3% menjadi sekitar 1,0% per tahun, tetapi jumlahnya tetap naik hampir 3 juta jiwa setiap tahun.")}
     <div class="chart-card">
-      ${barChart(POPULATION_YEAR.map((p) => ({ label: String(p.year), value: p.value })), { format: (v) => `${v} jt` })}
+      ${barChart(POPULATION_YEAR.map((p) => ({ label: String(p.year), value: p.value })), { format: (v) => `${idNum(v)} jt` })}
       ${src("BPS, 2024 — jumlah penduduk pertengahan tahun (juta jiwa)")}
     </div>
   </section>
@@ -96,8 +101,8 @@ export function renderHome(state) {
 export function renderPopulation(state) {
   const kind = state.popKind || "bar";
   const chart = kind === "line"
-    ? lineChart(POPULATION_YEAR.map((p) => ({ label: String(p.year), value: p.value })), { format: (v) => `${v} jt` })
-    : barChart(POPULATION_YEAR.map((p) => ({ label: String(p.year), value: p.value })), { format: (v) => `${v} jt` });
+    ? lineChart(POPULATION_YEAR.map((p) => ({ label: String(p.year), value: p.value })), { format: (v) => `${idNum(v)} jt` })
+    : barChart(POPULATION_YEAR.map((p) => ({ label: String(p.year), value: p.value })), { format: (v) => `${idNum(v)} jt` });
   return `
   <section class="page-head"><p class="eyebrow">Penduduk</p><h1>281,6 juta jiwa, dan terus bertambah</h1>
   <p class="lede">Indonesia adalah negara berpenduduk terbesar keempat di dunia. Pertumbuhannya melambat, tetapi setiap tahun bertambah sekitar 3 juta jiwa — setara satu kota besar baru.</p></section>
@@ -109,7 +114,7 @@ export function renderPopulation(state) {
     ${sectionHead("Siapa penduduk Indonesia?", "Hampir tujuh dari sepuluh penduduk berada pada usia produktif — peluang besar, sekaligus pekerjaan rumah untuk lapangan kerja.")}
     <div class="duo">
       <div class="chart-card">${donutChart(AGE_GROUPS.map((g) => ({ label: g.group, value: g.share })), { centerTop: "68,9%", centerBottom: "usia produktif" })}${legend(AGE_GROUPS.map((g) => ({ label: `${g.group} (${g.note})`, value: g.share })))}</div>
-      <div class="chart-card"><h3>Sebaran menurut pulau</h3>${hbarChart(ISLAND_SHARE.map((s) => ({ label: s.island, value: s.share })), { format: (v) => `${v}%`, labelWidth: 170 })}${src("BPS, 2024 — persen penduduk")}</div>
+      <div class="chart-card"><h3>Sebaran menurut pulau</h3>${hbarChart(ISLAND_SHARE.map((s) => ({ label: s.island, value: s.share })), { format: (v) => `${idNum(v)}%`, labelWidth: 170 })}${src("BPS, 2024 — persen penduduk")}</div>
     </div>
   </section>
   <section>
@@ -122,7 +127,7 @@ export function renderPopulation(state) {
 export function provinceRows(list) {
   return list.map((p) => {
     const density = Math.round((p.pop * 1000000) / p.area);
-    return `<tr><td>${p.name}</td><td>${p.island}</td><td class="num">${p.pop.toFixed(2)}</td><td class="num">${density.toLocaleString("id-ID")}</td><td class="num">${p.tpt.toFixed(2)}%</td></tr>`;
+    return `<tr><td>${p.name}</td><td>${p.island}</td><td class="num">${idNum(p.pop, 2)}</td><td class="num">${density.toLocaleString("id-ID")}</td><td class="num">${idNum(p.tpt, 2)}%</td></tr>`;
   }).join("");
 }
 
@@ -156,7 +161,7 @@ export function renderEconomy(state) {
   const year = state.gdpYear || 2024;
   const row = GDP_YEAR.find((g) => g.year === year);
   const chart = kind === "line"
-    ? lineChart(GDP_YEAR.map((g) => ({ label: String(g.year), value: g.growth })), { format: (v) => `${v}%` })
+    ? lineChart(GDP_YEAR.map((g) => ({ label: String(g.year), value: g.growth })), { format: (v) => `${idNum(v, 2)}%` })
     : barChart(GDP_YEAR.map((g) => ({ label: String(g.year), value: g.nominal })), { format: (v) => `Rp${v.toLocaleString("id-ID")} T` });
   return `
   <section class="page-head"><p class="eyebrow">Ekonomi</p><h1>PDB Rp22.139 triliun, tumbuh 5,03%</h1>
@@ -170,7 +175,7 @@ export function renderEconomy(state) {
     ${yearButtons(GDP_YEAR.map((g) => g.year), year, "gdpYear")}
     <div class="duo">
       <article class="card stat"><span class="stat-label">PDB ${row.year}</span><span class="stat-value">Rp${row.nominal.toLocaleString("id-ID")} triliun</span><span class="stat-note">Atas dasar harga berlaku</span></article>
-      <article class="card stat"><span class="stat-label">Pertumbuhan ${row.year}</span><span class="stat-value">${row.growth}%</span><span class="stat-note">Dibanding tahun sebelumnya (c-to-c)</span></article>
+      <article class="card stat"><span class="stat-label">Pertumbuhan ${row.year}</span><span class="stat-value">${idNum(row.growth, 2)}%</span><span class="stat-note">Dibanding tahun sebelumnya (c-to-c)</span></article>
     </div>
     ${src("BPS, 2025")}
   </section>
@@ -191,10 +196,10 @@ export function renderEconomy(state) {
 export function renderPrices(state) {
   const kind = state.priceKind || "inflasi";
   const chart = kind === "inflasi"
-    ? lineChart(INFLATION_YEAR.map((p) => ({ label: String(p.year), value: p.value })), { format: (v) => `${v}%` })
+    ? lineChart(INFLATION_YEAR.map((p) => ({ label: String(p.year), value: p.value })), { format: (v) => `${idNum(v, 2)}%` })
     : kind === "tpt"
-      ? lineChart(TPT_YEAR.map((p) => ({ label: String(p.year), value: p.value })), { format: (v) => `${v}%` })
-      : lineChart(POVERTY_YEAR.map((p) => ({ label: String(p.year), value: p.value })), { format: (v) => `${v}%` });
+      ? lineChart(TPT_YEAR.map((p) => ({ label: String(p.year), value: p.value })), { format: (v) => `${idNum(v, 2)}%` })
+      : lineChart(POVERTY_YEAR.map((p) => ({ label: String(p.year), value: p.value })), { format: (v) => `${idNum(v, 2)}%` });
   const titles = { inflasi: "Inflasi tahunan 2020–2024", tpt: "Pengangguran terbuka (Agustus) 2020–2024", miskin: "Penduduk miskin (September) 2020–2024" };
   const notes = {
     inflasi: "Inflasi 2022 melonjak ke 5,51% setelah penyesuaian harga BBM, lalu kembali ke 1,57% pada 2024 — terendah dalam lima tahun.",
@@ -217,6 +222,20 @@ export function renderPrices(state) {
       <article class="card"><h3>Garis kemiskinan</h3><p>Rp595.242 per kapita per bulan pada September 2024; 74,50% di antaranya untuk kebutuhan makanan. Rumah tangga miskin rata-rata beranggotakan 4,71 orang.</p>${src("BPS, 2024")}</article>
       <article class="card"><h3>Perkotaan dan perdesaan</h3><p>Kemiskinan perkotaan 6,66%, perdesaan 11,34% (September 2024). Pengangguran perkotaan 5,79%, perdesaan 3,67%.</p>${src("BPS, 2024")}</article>
     </div>
+  </section>
+  <section>
+    ${sectionHead("Kalkulator daya beli", "Berapa nilai uang tahun lalu dalam rupiah hari ini? Kalkulator ini menyesuaikan dengan inflasi (IHK) BPS.")}
+    <div class="card calc-box">
+      <div class="calc-row">
+        <label>Jumlah (Rp)<input type="number" id="calc-amount" value="1000000" min="0" step="1000" inputmode="numeric"></label>
+        <label>Dari tahun
+          <select id="calc-year">${CPI_SERIES.map((c) => `<option value="${c.year}"${c.year === 2020 ? " selected" : ""}>${c.year}</option>`).join("")}</select>
+        </label>
+        <button type="button" class="btn primary" id="calc-run">Hitung nilainya di 2024</button>
+      </div>
+      <p class="calc-result" id="calc-result" aria-live="polite">Rp1.000.000 pada 2020 setara dengan Rp1.120.200 pada 2024.</p>
+      ${src("BPS — IHK 2020 = 100; 2021: 101,87; 2022: 107,49; 2023: 110,29; 2024: 112,02")}
+    </div>
   </section>`;
 }
 
@@ -224,8 +243,8 @@ export function renderPrices(state) {
 export function renderTrade(state) {
   const kind = state.tradeKind || "ekspor";
   const chart = kind === "ekspor"
-    ? barChart(TRADE_YEAR.map((t) => ({ label: String(t.year), value: t.exports })), { format: (v) => `US$${v} M` })
-    : barChart(TRADE_YEAR.map((t) => ({ label: String(t.year), value: t.surplus })), { format: (v) => `US$${v} M` });
+    ? barChart(TRADE_YEAR.map((t) => ({ label: String(t.year), value: t.exports })), { format: (v) => `US$${idNum(v, 2)} M` })
+    : barChart(TRADE_YEAR.map((t) => ({ label: String(t.year), value: t.surplus })), { format: (v) => `US$${idNum(v, 2)} M` });
   return `
   <section class="page-head"><p class="eyebrow">Perdagangan</p><h1>Surplus US$31,04 miliar pada 2024</h1>
   <p class="lede">Indonesia surplus dagang lima tahun berturut-turut. Ekspor naik 2,29% menjadi US$264,70 miliar; impor naik 5,31% menjadi US$233,66 miliar.</p></section>
@@ -236,15 +255,15 @@ export function renderTrade(state) {
   <section>
     ${sectionHead("Ke mana barang Indonesia pergi?", "Tiongkok menyerap hampir seperempat ekspor. Tiga negara tujuan utama — Tiongkok, Amerika Serikat, Jepang — menyumbang 44,2% ekspor nonmigas pada Desember 2024.")}
     <div class="duo">
-      <div class="chart-card"><h3>Negara tujuan ekspor utama (US$ miliar)</h3>${hbarChart(EXPORT_DESTINATIONS.map((d) => ({ label: d.country, value: d.value })), { format: (v) => `US$${v} M`, labelWidth: 130 })}${src("BPS, 2024")}</div>
-      <div class="chart-card"><h3>Komoditas ekspor terbesar (US$ miliar)</h3><ol class="rank-list">${TOP_EXPORTS.map((t, i) => `<li><span>${i + 1}. ${t.good}</span><strong>US$${t.value} M</strong></li>`).join("")}</ol>${src("BPS, Januari–November 2024")}</div>
+      <div class="chart-card"><h3>Negara tujuan ekspor utama (US$ miliar)</h3>${hbarChart(EXPORT_DESTINATIONS.map((d) => ({ label: d.country, value: d.value })), { format: (v) => `US$${idNum(v, 2)} M`, labelWidth: 130 })}${src("BPS, 2024")}</div>
+      <div class="chart-card"><h3>Komoditas ekspor terbesar (US$ miliar)</h3><ol class="rank-list">${TOP_EXPORTS.map((t, i) => `<li><span>${i + 1}. ${t.good}</span><strong>US$${idNum(t.value)} M</strong></li>`).join("")}</ol>${src("BPS, Januari–November 2024")}</div>
     </div>
   </section>
   <section>
     ${sectionHead("Neraca per tahun", "Surplus menyusut dari puncaknya pada 2022 karena impor tumbuh lebih cepat dari ekspor.")}
     <div class="table-wrap"><table class="data-table"><caption>Perdagangan luar negeri (US$ miliar)</caption>
     <thead><tr><th scope="col">Tahun</th><th scope="col" class="num">Ekspor</th><th scope="col" class="num">Impor</th><th scope="col" class="num">Surplus</th></tr></thead>
-    <tbody>${TRADE_YEAR.map((t) => `<tr><td>${t.year}</td><td class="num">${t.exports.toFixed(2)}</td><td class="num">${t.imports.toFixed(2)}</td><td class="num">${t.surplus.toFixed(2)}</td></tr>`).join("")}</tbody></table></div>
+    <tbody>${TRADE_YEAR.map((t) => `<tr><td>${t.year}</td><td class="num">${idNum(t.exports, 2)}</td><td class="num">${idNum(t.imports, 2)}</td><td class="num">${idNum(t.surplus, 2)}</td></tr>`).join("")}</tbody></table></div>
     ${src("BPS / Kementerian Keuangan, 2024")}
   </section>`;
 }
@@ -260,7 +279,7 @@ export function renderHealth(state) {
   </section>
   <section>
     ${sectionHead("Sekolah: hampir semua anak bersekolah", "Angka partisipasi sekolah (APS) menurut jenjang, 2024.")}
-    <div class="chart-card">${hbarChart(EDUCATION.map((e) => ({ label: e.level, value: e.aps })), { format: (v) => `${v}%`, labelWidth: 210 })}${src("BPS, 2024")}</div>
+    <div class="chart-card">${hbarChart(EDUCATION.map((e) => ({ label: e.level, value: e.aps })), { format: (v) => `${idNum(v)}%`, labelWidth: 210 })}${src("BPS, 2024")}</div>
   </section>
   <section>
     ${sectionHead("Kesehatan dalam angka", "Empat angka yang paling sering dicari.")}
@@ -280,7 +299,7 @@ export function renderRegions(state) {
   <p class="lede">Jawa Barat adalah provinsi berpenduduk terbesar (50,35 juta jiwa); DKI Jakarta yang terpadat (lebih dari 16.000 jiwa per km²). Bandingkan provinsi-provinsi terbesar di bawah ini.</p></section>
   <section>
     ${sectionHead("Penduduk 12 provinsi terbesar", "Dalam juta jiwa, 2024.")}
-    <div class="chart-card">${hbarChart(PROVINCES.map((p) => ({ label: p.name, value: p.pop })), { format: (v) => `${v} jt`, labelWidth: 170 })}${src("BPS, 2024")}</div>
+    <div class="chart-card">${hbarChart(PROVINCES.map((p) => ({ label: p.name, value: p.pop })), { format: (v) => `${idNum(v, 2)} jt`, labelWidth: 170 })}${src("BPS, 2024")}</div>
   </section>
   <section>
     ${sectionHead("Tabel provinsi", "Cari, urutkan, dan unduh. Tabel memuat 12 provinsi berpenduduk terbesar.")}
@@ -291,6 +310,49 @@ export function renderRegions(state) {
     <h2>Mengapa Jawa begitu padat?</h2>
     <p>Lebih dari separuh penduduk Indonesia tinggal di Jawa — 55,9% dari total — di atas kurang dari 7% luas daratan. Kepadatan Jawa Barat sekitar 1.354 jiwa per km², sementara Kalimantan Barat hanya 40 jiwa per km². Ketimpangan inilah yang membuat pemerataan pembangunan menjadi tema utama statistik daerah.</p>
     ${src("BPS, 2024 — dihitung dari data penduduk dan luas wilayah")}
+  </section>`;
+}
+
+// ---------- Bandingkan ----------
+export function renderCompare(state) {
+  const aName = state.compareA || "Jawa Barat";
+  const bName = state.compareB || "DKI Jakarta";
+  const a = PROVINCES.find((p) => p.name === aName) || PROVINCES[0];
+  const b = PROVINCES.find((p) => p.name === bName) || PROVINCES[5];
+  const dens = (p) => Math.round((p.pop * 1000000) / p.area);
+  const ratio = (a.pop / b.pop).toFixed(1).replace(".", ",");
+  const densRatio = Math.round(dens(b) / dens(a));
+  const options = (current) => PROVINCES.map((p) => `<option value="${p.name}"${p.name === current ? " selected" : ""}>${p.name}</option>`).join("");
+  const row = (label, va, vb, note) => `<tr><th scope="row">${label}</th><td class="num">${va}</td><td class="num">${vb}</td><td class="muted">${note}</td></tr>`;
+  return `
+  <section class="page-head"><p class="eyebrow">Bandingkan</p><h1>${a.name} lawan ${b.name}</h1>
+  <p class="lede">Pilih dua provinsi dan bandingkan langsung: penduduk, kepadatan, dan pengangguran. Semua angka tahun 2024.</p></section>
+  <section>
+    <div class="card compare-pick">
+      <label>Provinsi pertama
+        <select id="compare-a">${options(a.name)}</select>
+      </label>
+      <span class="vs" aria-hidden="true">lawan</span>
+      <label>Provinsi kedua
+        <select id="compare-b">${options(b.name)}</select>
+      </label>
+    </div>
+  </section>
+  <section>
+    <div class="table-wrap"><table class="data-table"><caption>Perbandingan ${a.name} dan ${b.name}, 2024</caption>
+    <thead><tr><th scope="col">Ukuran</th><th scope="col" class="num">${a.name}</th><th scope="col" class="num">${b.name}</th><th scope="col">Catatan</th></tr></thead>
+    <tbody>
+      ${row("Penduduk (juta jiwa)", idNum(a.pop, 2), idNum(b.pop, 2), `${a.name} berpenduduk ${ratio} kali ${b.name}`)}
+      ${row("Kepadatan (jiwa/km²)", dens(a).toLocaleString("id-ID"), dens(b).toLocaleString("id-ID"), `${b.name} ${densRatio} kali lebih padat`)}
+      ${row("Luas wilayah (km²)", a.area.toLocaleString("id-ID"), b.area.toLocaleString("id-ID"), "Luas daratan menurut BPS")}
+      ${row("Pengangguran / TPT (%)", idNum(a.tpt, 2) + "%", idNum(b.tpt, 2) + "%", "Agustus 2024 — lebih rendah lebih baik")}
+      ${row("Pulau", a.island, b.island, "")}
+    </tbody></table></div>
+    ${src("BPS, 2024 — penduduk pertengahan tahun; luas wilayah BPS; TPT BPS Sakernas Agustus 2024")}
+  </section>
+  <section>
+    ${sectionHead("Penduduk kedua provinsi", "Dalam juta jiwa.")}
+    <div class="chart-card">${hbarChart([{ label: a.name, value: a.pop }, { label: b.name, value: b.pop }], { format: (v) => `${idNum(v, 2)} jt`, labelWidth: 170 })}${src("BPS, 2024")}</div>
   </section>`;
 }
 

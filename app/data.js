@@ -85,6 +85,16 @@ export const INFLATION_YEAR = [
   { year: 2024, value: 1.57 },
 ];
 
+// Indeks Harga Konsumen (2020 = 100), dihitung berantai dari inflasi tahunan BPS:
+// 2021 = 100 × 1,0187; 2022 = × 1,0551; 2023 = × 1,0261; 2024 = × 1,0157.
+export const CPI_SERIES = [
+  { year: 2020, index: 100.0 },
+  { year: 2021, index: 101.87 },
+  { year: 2022, index: 107.49 },
+  { year: 2023, index: 110.29 },
+  { year: 2024, index: 112.02 },
+];
+
 export const TPT_YEAR = [
   { year: 2020, value: 7.07 },
   { year: 2021, value: 6.49 },
@@ -176,6 +186,8 @@ export const SEARCH_INDEX = [
   { term: "ipm pembangunan manusia", title: "IPM 75,02 — kategori tinggi", route: "#/kesehatan-pendidikan", hint: "BPS, 2024" },
   { term: "ekspor impor perdagangan", title: "Ekspor US$264,70 miliar, surplus US$31,04 miliar", route: "#/perdagangan", hint: "BPS / Kemenkeu, 2024" },
   { term: "provinsi daerah jawa barat jakarta", title: "Perbandingan 12 provinsi terbesar", route: "#/daerah", hint: "BPS, 2024" },
+  { term: "bandingkan provinsi lawan", title: "Bandingkan dua provinsi", route: "#/bandingkan", hint: "BPS, 2024" },
+  { term: "kalkulator daya beli inflasi rupiah", title: "Kalkulator daya beli (IHK)", route: "#/harga-kerja", hint: "BPS, 2024" },
   { term: "sekolah pendidikan aps", title: "Angka partisipasi sekolah dan lama sekolah", route: "#/kesehatan-pendidikan", hint: "BPS, 2024" },
   { term: "harapan hidup kesehatan stunting", title: "Harapan hidup 74,15 tahun, stunting 19,8%", route: "#/kesehatan-pendidikan", hint: "BPS / Kemenkes, 2024" },
   { term: "upah ump jakarta", title: "UMP DKI Jakarta 2025 Rp5.396.761", route: "#/harga-kerja", hint: "Pemprov DKI Jakarta, 2025" },
