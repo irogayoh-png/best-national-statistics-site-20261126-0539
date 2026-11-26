@@ -14,11 +14,16 @@ import { buildDossier } from "./vendor/makefun-frontend.ts";
 const here = fileURLToPath(new URL(".", import.meta.url));
 const out = process.env.MAKEFUN_OUTPUT_DIR ?? "/output";
 
-mkdirSync(out, { recursive: true });
-cpSync(join(here, "app"), join(out, "app"), { recursive: true });
-mkdirSync(join(out, "screenshots"), { recursive: true });
-if (existsSync(join(here, "screenshots"))) {
-  cpSync(join(here, "screenshots"), join(out, "screenshots"), { recursive: true });
+try {
+  mkdirSync(out, { recursive: true });
+  cpSync(join(here, "app"), join(out, "app"), { recursive: true });
+  mkdirSync(join(out, "screenshots"), { recursive: true });
+  if (existsSync(join(here, "screenshots"))) {
+    cpSync(join(here, "screenshots"), join(out, "screenshots"), { recursive: true });
+  }
+} catch (error) {
+  console.error("StatNusa: gagal menyalin situs:", error instanceof Error ? error.message : error);
+  process.exit(1);
 }
 
 // Batas gate untuk entri ini: paling banyak 4 screenshot @ 256 KiB,
