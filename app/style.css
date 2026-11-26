@@ -1,0 +1,434 @@
+/* StatNusa — style.css
+   Satu pekerjaan: seluruh tampilan situs.
+   Palet: hijau pinus dalam, kuning safron, kertas hangat. Tanpa font dari luar. */
+
+:root {
+  --pine: #0e3b2e;
+  --pine-soft: #14503f;
+  --teal: #1b7a6b;
+  --saffron: #e9a319;
+  --saffron-soft: #fdf3d7;
+  --terra: #c65d3b;
+  --paper: #f7f3ea;
+  --card: #fffdf8;
+  --ink: #17241f;
+  --muted: #5c6b64;
+  --line: #e3dccb;
+  --focus: #8a5a00;
+  --radius: 14px;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+h1, h2, h3 {
+  font-family: Georgia, "Times New Roman", serif;
+  line-height: 1.2;
+  color: var(--pine);
+  margin: 0 0 0.5em;
+}
+
+h1 { font-size: clamp(1.9rem, 4.5vw, 3rem); }
+h2 { font-size: clamp(1.4rem, 3vw, 1.9rem); }
+h3 { font-size: 1.15rem; }
+
+p { margin: 0 0 0.9em; }
+a { color: var(--pine-soft); }
+a:hover { color: var(--terra); }
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ---------- Header ---------- */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--pine);
+  color: #fff;
+  border-bottom: 4px solid var(--saffron);
+}
+
+.header-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0.7rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: #fff;
+  text-decoration: none;
+  font-family: Georgia, serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.brand-mark { flex: none; }
+
+.brand small {
+  display: block;
+  font-family: system-ui, sans-serif;
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #cfe3d8;
+}
+
+.main-nav {
+  display: flex;
+  gap: 0.15rem;
+  flex-wrap: wrap;
+  margin-left: auto;
+}
+
+.nav-link {
+  color: #dcebe2;
+  text-decoration: none;
+  font-size: 0.92rem;
+  padding: 0.4rem 0.6rem;
+  border-radius: 8px;
+}
+
+.nav-link:hover { background: rgba(255, 255, 255, 0.12); color: #fff; }
+.nav-link.active { background: var(--saffron); color: var(--pine); font-weight: 700; }
+
+.search-box { position: relative; flex: 1 1 220px; max-width: 300px; }
+
+.search-box input {
+  width: 100%;
+  padding: 0.5rem 0.8rem;
+  border: 1px solid #2c5c4c;
+  border-radius: 999px;
+  background: #0a2e24;
+  color: #fff;
+  font-size: 0.95rem;
+}
+
+.search-box input::placeholder { color: #9db8ac; }
+
+.search-results {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  margin: 0;
+  padding: 0.3rem;
+  list-style: none;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: 0 12px 30px rgba(23, 36, 31, 0.25);
+  z-index: 30;
+}
+
+.search-results li a {
+  display: block;
+  padding: 0.5rem 0.6rem;
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--ink);
+}
+
+.search-results li a:hover { background: var(--saffron-soft); }
+.search-results li a span { display: block; font-weight: 600; font-size: 0.95rem; }
+.search-results li a small { color: var(--muted); }
+.search-empty { padding: 0.6rem; color: var(--muted); font-size: 0.95rem; }
+
+/* ---------- Layout ---------- */
+main {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+}
+
+section { margin-bottom: 2.4rem; }
+
+.section-head p { color: var(--muted); max-width: 62ch; }
+
+.page-head { border-bottom: 2px solid var(--line); padding-bottom: 1.2rem; }
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--terra);
+  margin-bottom: 0.5rem;
+}
+
+.lede { font-size: 1.12rem; color: #33463d; max-width: 68ch; }
+
+.muted { color: var(--muted); font-size: 0.92rem; }
+.source { color: var(--muted); font-size: 0.85rem; margin: 0.6em 0 0; }
+
+/* ---------- Hero ---------- */
+.hero {
+  background: var(--pine);
+  color: #fff;
+  border-radius: var(--radius);
+  padding: 2.2rem 2rem;
+  margin-bottom: 2rem;
+}
+
+.hero h1 { color: #fff; }
+.hero .eyebrow { color: var(--saffron); }
+.hero .lede { color: #d7e6dc; }
+
+.hero-actions { display: flex; gap: 0.7rem; flex-wrap: wrap; margin-top: 1.2rem; }
+
+/* ---------- Tombol ---------- */
+.btn {
+  display: inline-block;
+  padding: 0.6rem 1.1rem;
+  border-radius: 999px;
+  border: 1px solid var(--pine);
+  background: var(--card);
+  color: var(--pine);
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.btn:hover { background: var(--saffron-soft); }
+.btn.primary { background: var(--saffron); border-color: var(--saffron); color: #231a05; }
+.btn.primary:hover { background: #f4b942; }
+.btn.small { padding: 0.4rem 0.8rem; font-size: 0.88rem; }
+
+.hero .btn { border-color: #fff; background: transparent; color: #fff; }
+.hero .btn:hover { background: rgba(255, 255, 255, 0.14); }
+.hero .btn.primary { background: var(--saffron); border-color: var(--saffron); color: #231a05; }
+.hero .btn.primary:hover { background: #f4b942; }
+
+/* ---------- Kartu indikator ---------- */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.kpi {
+  display: block;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-top: 5px solid var(--teal);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.2rem;
+  text-decoration: none;
+  color: var(--ink);
+}
+
+.kpi:hover { border-color: var(--teal); box-shadow: 0 6px 18px rgba(14, 59, 46, 0.12); }
+.kpi-label { display: block; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.kpi-value { display: block; font-family: Georgia, serif; font-size: 2rem; font-weight: 700; color: var(--pine); line-height: 1.15; margin: 0.2rem 0; font-variant-numeric: tabular-nums; }
+.kpi-detail, .kpi-change { display: block; font-size: 0.92rem; color: #33463d; }
+.kpi-change { font-weight: 600; color: var(--teal); }
+.kpi-source { display: block; font-size: 0.8rem; color: var(--muted); margin-top: 0.4rem; }
+
+/* ---------- Kartu & kolom ---------- */
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.2rem 1.3rem;
+}
+
+.duo { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; align-items: start; }
+.duo > * { min-width: 0; }
+
+.chart-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.2rem 1.3rem;
+}
+
+.chart-svg { width: 100%; height: auto; display: block; }
+.chart-grid { stroke: #e9e2cf; stroke-width: 1; }
+.chart-axis { font-size: 11px; fill: var(--muted); font-family: system-ui, sans-serif; }
+.chart-value { font-size: 12px; font-weight: 700; fill: var(--pine); font-family: system-ui, sans-serif; }
+.chart-label { font-size: 12.5px; fill: var(--ink); font-family: system-ui, sans-serif; }
+.donut-center { font-size: 26px; font-weight: 700; fill: var(--pine); font-family: Georgia, serif; }
+.donut-sub { font-size: 12px; fill: var(--muted); font-family: system-ui, sans-serif; }
+
+.legend { list-style: none; margin: 1rem 0 0; padding: 0; display: grid; gap: 0.35rem; font-size: 0.92rem; }
+.legend .swatch { display: inline-block; width: 0.85rem; height: 0.85rem; border-radius: 3px; margin-right: 0.45rem; vertical-align: -0.05rem; }
+
+/* ---------- Statistik besar ---------- */
+.card.stat { text-align: left; }
+.stat-label { display: block; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.stat-value { display: block; font-family: Georgia, serif; font-size: 2.1rem; font-weight: 700; color: var(--pine); margin: 0.25rem 0; font-variant-numeric: tabular-nums; }
+.stat-note { color: var(--muted); font-size: 0.92rem; }
+
+/* ---------- Tab, pengalih, tahun ---------- */
+.tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+
+.tab {
+  padding: 0.55rem 1.1rem;
+  border-radius: 999px;
+  border: 1px solid var(--pine);
+  background: transparent;
+  color: var(--pine);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tab.active { background: var(--pine); color: #fff; }
+
+.toggle-row, .year-row { display: flex; gap: 0.45rem; flex-wrap: wrap; margin-bottom: 0.9rem; }
+
+.toggle-btn, .year-btn {
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.toggle-btn.active, .year-btn.active { background: var(--pine); border-color: var(--pine); color: #fff; font-weight: 700; }
+
+/* ---------- Tabel ---------- */
+.table-tools { display: flex; gap: 0.8rem; align-items: end; flex-wrap: wrap; margin-bottom: 0.8rem; }
+.filter-label { font-weight: 600; font-size: 0.95rem; }
+.filter-label input {
+  display: block;
+  margin-top: 0.3rem;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font: inherit;
+  font-size: 0.95rem;
+  background: var(--card);
+  min-width: 240px;
+}
+
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); }
+
+.data-table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+.data-table caption { text-align: left; font-weight: 700; padding: 0.9rem 1rem 0.4rem; color: var(--pine); }
+.data-table th, .data-table td { padding: 0.65rem 1rem; text-align: left; border-top: 1px solid var(--line); }
+.data-table thead th { border-top: 0; background: var(--saffron-soft); }
+.data-table tbody tr:nth-child(even) { background: #fbf8ef; }
+.data-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+.data-table th.num { text-align: right; }
+
+.sort-btn {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  font-weight: 700;
+  color: var(--pine);
+  cursor: pointer;
+  text-align: left;
+}
+
+/* ---------- Daftar ---------- */
+.facts {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin: 0;
+}
+
+.fact {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1rem 1.1rem;
+}
+
+.fact dt { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+.fact dd { margin: 0.25rem 0 0; font-family: Georgia, serif; font-size: 1.35rem; font-weight: 700; color: var(--pine); }
+.fact dd.fact-src { font-family: system-ui, sans-serif; font-size: 0.8rem; font-weight: 400; color: var(--muted); }
+
+.update-list { list-style: none; margin: 0 0 1rem; padding: 0; display: grid; gap: 0.7rem; }
+.update-list li {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 1rem;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-left: 5px solid var(--saffron);
+  border-radius: 10px;
+  padding: 0.8rem 1rem;
+}
+.update-date { font-weight: 700; color: var(--pine); font-size: 0.92rem; }
+
+.rank-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.6rem; }
+.rank-list li { display: flex; justify-content: space-between; gap: 1rem; border-bottom: 1px solid var(--line); padding-bottom: 0.55rem; }
+.rank-list li:last-child { border-bottom: 0; }
+
+.note-box {
+  background: var(--saffron-soft);
+  border: 1px solid #ecd9a0;
+  border-radius: var(--radius);
+  padding: 1.3rem 1.4rem;
+}
+
+/* ---------- Footer ---------- */
+.site-footer {
+  background: var(--pine);
+  color: #dcebe2;
+  margin-top: 1rem;
+}
+
+.footer-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 2rem;
+  font-size: 0.93rem;
+}
+
+.site-footer h2 { color: #fff; font-size: 1.05rem; }
+.site-footer a { color: var(--saffron); }
+.footer-inner ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.35rem; }
+
+/* ---------- Responsif ---------- */
+@media (max-width: 900px) {
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  .facts { grid-template-columns: repeat(2, 1fr); }
+  .duo { grid-template-columns: 1fr; }
+  .footer-inner { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px) {
+  body { font-size: 16px; }
+  .header-inner { gap: 0.6rem; }
+  .main-nav { order: 3; width: 100%; margin-left: 0; }
+  .search-box { max-width: none; flex-basis: 100%; }
+  .kpi-grid { grid-template-columns: 1fr; }
+  .hero { padding: 1.5rem 1.2rem; }
+  .update-list li { grid-template-columns: 1fr; gap: 0.2rem; }
+  .filter-label input { min-width: 0; width: 100%; }
+}
